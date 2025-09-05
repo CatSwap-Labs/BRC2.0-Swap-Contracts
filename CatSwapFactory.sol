@@ -279,7 +279,7 @@ contract CatSwapPair is ICatSwapPair, CatSwapERC20 {
         emit Sync(reserve0, reserve1);
     }
 
-    // if fee is on, mint liquidity equivalent to 2/3rd of the growth in sqrt(k) (0.2% out of 0.3% LP fee portion)
+    // if fee is on, mint liquidity equivalent to 3/8th of the growth in sqrt(k)
     function _mintFee(uint112 _reserve0, uint112 _reserve1) private returns (bool feeOn) {
         address feeTo = ICatSwapFactory(factory).feeTo();
         feeOn = feeTo != address(0);
@@ -289,8 +289,8 @@ contract CatSwapPair is ICatSwapPair, CatSwapERC20 {
                 uint rootK = Math.sqrt(uint(_reserve0).mul(_reserve1));
                 uint rootKLast = Math.sqrt(_kLast);
                 if (rootK > rootKLast) {
-                    uint numerator = totalSupply.mul(rootK.sub(rootKLast)).mul(2);
-                    uint denominator = rootK.mul(3).add(rootKLast.mul(2)); // Allocate 2/3 of LP portion to feeTo (0.2% out of 0.3%)
+                    uint numerator = totalSupply.mul(rootK.sub(rootKLast)).mul(3);
+                    uint denominator = rootK.mul(5).add(rootKLast.mul(3));
                     uint liquidity = numerator / denominator;
                     if (liquidity > 0) _mint(feeTo, liquidity);
                 }
@@ -371,8 +371,8 @@ contract CatSwapPair is ICatSwapPair, CatSwapERC20 {
         uint amount1In = balance1 > _reserve1 - amount1Out ? balance1 - (_reserve1 - amount1Out) : 0;
         require(amount0In > 0 || amount1In > 0, 'CatSwap: INSUFFICIENT_INPUT_AMOUNT');
         { // scope for reserve{0,1}Adjusted, avoids stack too deep errors
-        uint balance0Adjusted = balance0.mul(1000).sub(amount0In.mul(5)); // Changed from 3 to 5 for 0.5% total fee
-        uint balance1Adjusted = balance1.mul(1000).sub(amount1In.mul(5)); // Changed from 3 to 5 for 0.5% total fee
+        uint balance0Adjusted = balance0.mul(1000).sub(amount0In.mul(8));
+        uint balance1Adjusted = balance1.mul(1000).sub(amount1In.mul(8));
         require(balance0Adjusted.mul(balance1Adjusted) >= uint(_reserve0).mul(_reserve1).mul(1000**2), 'CatSwap: K');
         }
 
