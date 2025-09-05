@@ -404,7 +404,7 @@ library CatSwapLibrary {
                 hex'ff',
                 factory,
                 keccak256(abi.encodePacked(token0, token1)),
-                hex'6c48b9ed48de61bea245c7d951e0eaf55eab45ded65c597a5cc625b9c8644317' // init code hash
+                hex'568a8d53b5e2269a002ec8ee228281ecfd5fc12f4b2b5cbc9e9f58645810f973' // init code hash
             ))));
     }
 
@@ -426,7 +426,7 @@ library CatSwapLibrary {
     function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) internal pure returns (uint amountOut) {
         require(amountIn > 0, 'CatSwapLibrary: INSUFFICIENT_INPUT_AMOUNT');
         require(reserveIn > 0 && reserveOut > 0, 'CatSwapLibrary: INSUFFICIENT_LIQUIDITY');
-        uint amountInWithFee = amountIn.mul(995); // Changed from 997 to 995 for 0.5% fee
+        uint amountInWithFee = amountIn.mul(992);
         uint numerator = amountInWithFee.mul(reserveOut);
         uint denominator = reserveIn.mul(1000).add(amountInWithFee);
         amountOut = numerator / denominator;
@@ -437,7 +437,7 @@ library CatSwapLibrary {
         require(amountOut > 0, 'CatSwapLibrary: INSUFFICIENT_OUTPUT_AMOUNT');
         require(reserveIn > 0 && reserveOut > 0, 'CatSwapLibrary: INSUFFICIENT_LIQUIDITY');
         uint numerator = reserveIn.mul(amountOut).mul(1000);
-        uint denominator = reserveOut.sub(amountOut).mul(995); // Changed from 997 to 995 for 0.5% fee
+        uint denominator = reserveOut.sub(amountOut).mul(992);
         amountIn = (numerator / denominator).add(1);
     }
 
@@ -482,10 +482,5 @@ library TransferHelper {
         // bytes4(keccak256(bytes('transferFrom(address,address,uint256)')));
         (bool success, bytes memory data) = token.call(abi.encodeWithSelector(0x23b872dd, from, to, value));
         require(success && (data.length == 0 || abi.decode(data, (bool))), 'TransferHelper: TRANSFER_FROM_FAILED');
-    }
-
-    function safeTransferETH(address to, uint value) internal {
-        (bool success,) = to.call{value:value}(new bytes(0));
-        require(success, 'TransferHelper: ETH_TRANSFER_FAILED');
     }
 }
