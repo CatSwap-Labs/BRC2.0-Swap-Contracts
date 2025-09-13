@@ -404,7 +404,8 @@ library CatSwapLibrary {
                 hex'ff',
                 factory,
                 keccak256(abi.encodePacked(token0, token1)),
-                hex'568a8d53b5e2269a002ec8ee228281ecfd5fc12f4b2b5cbc9e9f58645810f973' // init code hash
+                // hex'568a8d53b5e2269a002ec8ee228281ecfd5fc12f4b2b5cbc9e9f58645810f973' // init code hash for signet
+                hex'0f527ab16ab83e629423e16ca31ee468a6a26b044046e42dd3905d7508f5c1da' // init code hash, for mainnet
             ))));
     }
 
